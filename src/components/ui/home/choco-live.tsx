@@ -7,6 +7,7 @@ import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 const ChocoLive = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const controls = useAnimation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,14 +22,51 @@ const ChocoLive = () => {
     "Respeto"
   ];
 
+  // Precargar el audio al montar el componente
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      // Establecer la ruta del audio (desde la carpeta public)
+      audio.src = "/sounds/nature-soundscape.mp3";
+      audio.load(); // Forzar la carga
+
+      const handleLoaded = () => {
+        setIsAudioLoaded(true);
+        console.log("Audio cargado correctamente");
+      };
+
+      const handleError = () => {
+        console.error("Error al cargar el audio");
+      };
+
+      audio.addEventListener('loadeddata', handleLoaded);
+      audio.addEventListener('error', handleError);
+
+      return () => {
+        audio.removeEventListener('loadeddata', handleLoaded);
+        audio.removeEventListener('error', handleError);
+      };
+    }
+  }, []);
+
   // Iniciar/parar experiencia
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    if (!isAudioLoaded) {
+      console.log("Audio aún no cargado");
+      return;
+    }
+
+    const newPlayingState = !isPlaying;
+    setIsPlaying(newPlayingState);
+
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
+      if (newPlayingState) {
+        audioRef.current.play()
+          .then(() => console.log("Reproducción iniciada"))
+          .catch(error => console.error("Error al reproducir:", error));
       } else {
-        audioRef.current.play().catch(e => console.log("Audio play error:", e));
+        audioRef.current.pause();
+        console.log("Reproducción pausada");
       }
     }
   };
@@ -168,8 +206,9 @@ const ChocoLive = () => {
           {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
         </button>
         <button 
-          className="bg-[#aedd2b] text-[#02416d] p-3 rounded-full shadow-lg hover:bg-[#9bc926] transition-colors"
+          className={`${isAudioLoaded ? 'bg-[#aedd2b] hover:bg-[#9bc926]' : 'bg-gray-400 cursor-not-allowed'} text-[#02416d] p-3 rounded-full shadow-lg transition-colors`}
           onClick={togglePlay}
+          disabled={!isAudioLoaded}
         >
           {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
         </button>
@@ -246,7 +285,7 @@ const ChocoLive = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Vive la <span className="text-[#aedd2b]">Experiencia</span> Choco
+          Vive la <span className="text-[#aedd2b]">Experiencia</span> Chocó
         </motion.h1>
         
         <motion.div
@@ -290,18 +329,21 @@ const ChocoLive = () => {
         </motion.div>
         
         <motion.button
-          className="bg-[#aedd2b] hover:bg-[#9bc926] text-[#02416d] font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transition-all duration-300 group"
+          className={`${isAudioLoaded ? 'bg-[#aedd2b] hover:bg-[#9bc926]' : 'bg-gray-400 cursor-not-allowed'} text-[#02416d] font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-all duration-300 group`}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.9 }}
           whileHover={{ 
-            scale: 1.05,
-            boxShadow: "0 0 20px rgba(174, 221, 43, 0.8)"
+            scale: isAudioLoaded ? 1.05 : 1,
+            boxShadow: isAudioLoaded ? "0 0 20px rgba(174, 221, 43, 0.8)" : "none"
           }}
           onClick={togglePlay}
+          disabled={!isAudioLoaded}
         >
           <span className="flex items-center">
-            {isPlaying ? (
+            {!isAudioLoaded ? (
+              "Cargando audio..."
+            ) : isPlaying ? (
               <>
                 <FaPause className="mr-2" /> Pausar Experiencia
               </>
@@ -319,11 +361,9 @@ const ChocoLive = () => {
         ref={audioRef} 
         loop 
         muted={isMuted}
+        preload="auto"
         className="hidden"
-      >
-        {/* En un proyecto real, aquí iría la fuente de audio */}
-        <source src="/sounds/nature-soundscape.mp3" type="audio/mpeg" />
-      </audio>
+      />
       
       {/* Efecto de ondas de sonido */}
       {isPlaying && (
