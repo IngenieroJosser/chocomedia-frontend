@@ -292,7 +292,7 @@ const CategoriesGrid = () => {
         />
         
         <motion.h2 
-          className="text-4xl md:text-5xl font-bold text-[#02416d] mb-4"
+          className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#02416d] mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -308,7 +308,7 @@ const CategoriesGrid = () => {
         />
         
         <motion.p 
-          className="mt-8 text-xl text-[#012c4d] max-w-2xl mx-auto"
+          className="mt-8 text-lg md:text-xl text-[#012c4d] max-w-2xl mx-auto px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
@@ -319,7 +319,7 @@ const CategoriesGrid = () => {
 
       <motion.div 
         ref={containerRef}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         variants={containerVariants}
         initial="hidden"
         animate={controls}
@@ -331,7 +331,7 @@ const CategoriesGrid = () => {
       
       {/* Sección para creadores con efecto 3D */}
       <motion.div 
-        className="mt-24 bg-gradient-to-r from-[#012c4d] to-[#02416d] rounded-2xl p-8 text-white overflow-hidden relative"
+        className="mt-16 md:mt-24 bg-gradient-to-r from-[#012c4d] to-[#02416d] rounded-2xl p-6 md:p-8 text-white overflow-hidden relative"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
@@ -343,13 +343,13 @@ const CategoriesGrid = () => {
         </div>
         
         {/* Elementos flotantes */}
-        <div className="absolute top-1/4 right-8 w-16 h-16 rounded-lg bg-[#aedd2b]/20 backdrop-blur-sm rotate-12 shadow-lg"></div>
-        <div className="absolute bottom-1/3 left-8 w-12 h-12 rounded-lg bg-[#aedd2b]/20 backdrop-blur-sm -rotate-12 shadow-lg"></div>
+        <div className="absolute top-1/4 right-4 md:right-8 w-12 h-12 md:w-16 md:h-16 rounded-lg bg-[#aedd2b]/20 backdrop-blur-sm rotate-12 shadow-lg"></div>
+        <div className="absolute bottom-1/3 left-4 md:left-8 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-[#aedd2b]/20 backdrop-blur-sm -rotate-12 shadow-lg"></div>
         
         <div className="relative z-10 flex flex-col md:flex-row items-center">
           <div className="md:w-2/3 mb-8 md:mb-0 md:pr-8">
             <motion.h3 
-              className="text-3xl font-bold mb-4"
+              className="text-2xl md:text-3xl font-bold mb-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.7 }}
@@ -358,7 +358,7 @@ const CategoriesGrid = () => {
             </motion.h3>
             
             <motion.p 
-              className="mb-6 text-white/90"
+              className="mb-6 text-white/90 text-base md:text-lg"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.8 }}
@@ -371,7 +371,7 @@ const CategoriesGrid = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
             >
-              <button className="relative overflow-hidden bg-[#aedd2b] text-[#02416d] font-bold py-3 px-8 rounded-full group">
+              <button className="relative overflow-hidden bg-[#aedd2b] text-[#02416d] font-bold py-2 md:py-3 px-6 md:px-8 rounded-full group">
                 <span className="relative z-10">Comenzar a publicar</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
               </button>
@@ -379,15 +379,15 @@ const CategoriesGrid = () => {
           </div>
           
           <motion.div 
-            className="md:w-1/3 flex justify-center"
+            className="md:w-1/3 flex justify-center mt-8 md:mt-0"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 1 }}
           >
             <div className="relative">
-              <div className="w-48 h-48 rounded-full bg-[#aedd2b]/20 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                <div className="w-32 h-32 rounded-full bg-[#aedd2b]/40 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <div className="w-20 h-20 rounded-full bg-[#aedd2b] flex items-center justify-center text-3xl border-2 border-white shadow-lg">
+              <div className="w-36 h-36 md:w-48 md:h-48 rounded-full bg-[#aedd2b]/20 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#aedd2b]/40 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#aedd2b] flex items-center justify-center text-2xl md:text-3xl border-2 border-white shadow-lg">
                     <motion.div
                       animate={{ 
                         rotate: [0, 10, -10, 5, 0],
@@ -409,11 +409,11 @@ const CategoriesGrid = () => {
               {["🎥", "🎙️", "🎞️", "📹"].map((icon, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-xl border border-white/20"
+                  className="absolute w-8 h-8 md:w-10 md:h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-lg md:text-xl border border-white/20"
                   animate={{
                     rotate: [0, 360],
-                    x: `${Math.cos(i * 1.57) * 100}px`,
-                    y: `${Math.sin(i * 1.57) * 100}px`
+                    x: `${Math.cos(i * 1.57) * 70}px`,
+                    y: `${Math.sin(i * 1.57) * 70}px`
                   }}
                   transition={{
                     duration: 8,
@@ -429,9 +429,9 @@ const CategoriesGrid = () => {
         </div>
       </motion.div>
       
-      {/* Texto decorativo flotante */}
+      {/* Texto decorativo flotante - Responsive */}
       <motion.div 
-        className="absolute top-1/2 left-4 text-[#012c4d]/5 font-bold text-9xl -rotate-90 pointer-events-none select-none"
+        className="absolute top-1/2 left-4 text-[#012c4d]/5 font-bold text-4xl md:text-6xl lg:text-8xl -rotate-90 pointer-events-none select-none hidden md:block"
         animate={{ y: [0, -20, 0] }}
         transition={{ duration: 6, repeat: Infinity }}
       >
