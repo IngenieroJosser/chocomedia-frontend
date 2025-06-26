@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Thumbnail from '@/components/Thumbnail';
 import { 
-  FaTimes, FaPlay, FaVolumeUp, FaFilm, FaMicrophone, FaBook, 
-  FaMapMarkerAlt, FaUsers, FaHandsHelping, FaHistory, FaFire,
+  FaTimes, FaPlay, FaFilm, FaMicrophone, FaBook, 
+  FaMapMarkerAlt, FaUsers, FaHandsHelping, FaHistory,
   FaSearch, FaFilter
 } from 'react-icons/fa';
 import { GiFamilyTree, GiRiver } from 'react-icons/gi';

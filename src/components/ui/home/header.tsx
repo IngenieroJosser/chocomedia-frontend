@@ -39,8 +39,6 @@ const Header = () => {
     { name: "Inicio", path: "/", icon: "🏠" },
     { name: "Explorar", path: "/explore", icon: "🔍" },
     { name: "Acerca de", path: "/about", icon: "❓" },
-    { name: "Contacto", path: "/contact", icon: "✉️" },
-    { name: "Iniciar sesión", path: "/login", icon: "🔑", isButton: true }
   ];
 
   // Efecto de partículas mágicas
@@ -289,29 +287,6 @@ const Header = () => {
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.1 + index * 0.05 }}
                     >
-                      {item.isButton ? (
-                        <button
-                          className={`w-full py-4 px-6 rounded-xl text-center text-xl font-medium transition-colors flex items-center justify-center ${
-                            pathname === item.path 
-                              ? "bg-[#aedd2b] text-[#02416d] font-bold" 
-                              : "bg-gradient-to-r from-[#aedd2b] to-[#9bc926] text-[#02416d] font-bold"
-                          }`}
-                          onClick={() => handleNavigation(item.path)}
-                        >
-                          {item.name}
-                        </button>
-                      ) : (
-                        <button
-                          className={`w-full py-4 px-6 rounded-xl text-center text-xl font-medium transition-colors flex items-center justify-center ${
-                            pathname === item.path 
-                              ? "bg-[#aedd2b] text-[#02416d] font-bold" 
-                              : "text-white hover:bg-white/10"
-                          }`}
-                          onClick={() => handleNavigation(item.path)}
-                        >
-                          {item.name}
-                        </button>
-                      )}
                     </motion.div>
                   ))}
                 </nav>
