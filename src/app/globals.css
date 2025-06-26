@@ -30,3 +30,8 @@ body {
   #ffffff
   #aedd2b
 */
+
+::selection {
+  background-color: #aedd2b;
+  color: #02416d;
+}
