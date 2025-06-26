@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FaPlay, FaVolumeUp, FaClock, FaEye } from 'react-icons/fa';
-import { ContentType, ThumbnailProps } from '@/lib/type';
+import { ThumbnailProps } from '@/lib/type';
 
 const Thumbnail = ({
   title,
