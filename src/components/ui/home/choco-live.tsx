@@ -8,6 +8,7 @@ const ChocoLive = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
+  const [coreValuePositions, setCoreValuePositions] = useState<{top: string, left: string}[]>([]);
   const controls = useAnimation();
   const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,6 +22,15 @@ const ChocoLive = () => {
     "Innovación",
     "Respeto"
   ];
+
+  // Calcular posiciones solo en el cliente
+  useEffect(() => {
+    const positions = coreValues.map((_, index) => ({
+      left: `${10 + index * 15}%`,
+      top: `${20 + Math.random() * 60}%`
+    }));
+    setCoreValuePositions(positions);
+  }, []);
 
   // Precargar el audio al montar el componente
   useEffect(() => {
@@ -254,14 +264,11 @@ const ChocoLive = () => {
       </div>
       
       {/* Valores fundamentales flotantes */}
-      {coreValues.map((value, index) => (
+      {coreValuePositions.map((pos, index) => (
         <motion.div
-          key={value}
+          key={coreValues[index]}
           className="absolute text-xl font-bold text-white bg-[#aedd2b] bg-opacity-30 backdrop-blur-sm px-4 py-2 rounded-full"
-          style={{
-            left: `${10 + index * 15}%`,
-            top: `${20 + Math.random() * 60}%`,
-          }}
+          style={pos}
           animate={{ 
             y: isPlaying ? [0, -20, 0] : 0,
             opacity: isPlaying ? [0.7, 1, 0.7] : 0.7,
@@ -273,7 +280,7 @@ const ChocoLive = () => {
             ease: "easeInOut"
           }}
         >
-          {value}
+          {coreValues[index]}
         </motion.div>
       ))}
       
