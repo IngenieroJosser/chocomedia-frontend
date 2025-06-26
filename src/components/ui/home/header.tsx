@@ -195,17 +195,17 @@ const Header = () => {
                     }`}
                   >
                     {item.name}
-                    <span 
+                    <div 
                       className={`absolute bottom-0 left-0 w-0 h-0.5 bg-[#aedd2b] transition-all duration-500 group-hover:w-full ${
                         pathname === item.path ? "w-full" : ""
                       }`}
-                    ></span>
+                    ></div>
                   </Link>
                   
                   {/* Efecto de brillo al hacer hover */}
                   {hoveredItem === item.name && (
                     <motion.div 
-                      className="absolute -inset-1 md:-inset-2 bg-[#aedd2b]/20 blur-md rounded-full"
+                      className="absolute -inset-1 md:-inset-2 bg-[#aedd2b]/20 blur-md rounded-full pointer-events-none"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
@@ -223,7 +223,7 @@ const Header = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="Iniciar sesión"
-                onClick={() => router.push('/login')}
+                onClick={() => handleNavigation('/login')}
               >
                 <span className="relative z-10">Iniciar sesión</span>
                 
