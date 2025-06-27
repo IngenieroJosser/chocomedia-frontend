@@ -2,9 +2,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
-import { FaPlay, FaVolumeUp, FaClock, FaEye, FaHeart, FaShareAlt, FaBookmark, FaFire } from 'react-icons/fa';
+import { FaPlay, FaClock, FaEye, FaHeart, FaShareAlt, FaBookmark, FaFire } from 'react-icons/fa';
 import { ThumbnailProps } from '@/lib/type';
-import { categoryConfig } from '@/lib/constants';
+import { categoryConfig } from '@/lib/utils';
 
 const Thumbnail = ({
   title,
