@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaEnvelope, FaGoogle, FaFacebook, FaTwitter, FaSeedling } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import TermsModal from '@/components/ui/auth/terms-and-conditions';
+import PrivacyModal from '@/components/ui/auth/privacy-policy';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -15,6 +17,8 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   
@@ -237,7 +241,7 @@ const RegisterPage = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full pl-12 pr-12 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
-                      placeholder="Contraseña"
+                      placeholder="*******"
                       required
                     />
                     <button
@@ -246,35 +250,6 @@ const RegisterPage = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                </motion.div>
-                
-                {/* Campo Confirmar Contraseña */}
-                <motion.div
-                  className="mb-6"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <FaLock className="text-[#aedd2b]" />
-                    </div>
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-12 pr-12 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
-                      placeholder="Confirmar contraseña"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#aedd2b]"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                 </motion.div>
@@ -321,7 +296,22 @@ const RegisterPage = () => {
                     required
                   />
                   <label htmlFor="terms" className="ml-2 text-sm text-white">
-                    Acepto los <a href="#" className="text-[#aedd2b] hover:underline">Términos y Condiciones</a> y la <a href="#" className="text-[#aedd2b] hover:underline">Política de Privacidad</a>
+                    Acepto los 
+                    <button 
+                      type="button"
+                      className="text-[#aedd2b] hover:underline mx-1"
+                      onClick={() => setShowTermsModal(true)}
+                    >
+                      Términos y Condiciones
+                    </button> 
+                    y la 
+                    <button 
+                      type="button"
+                      className="text-[#aedd2b] hover:underline ml-1"
+                      onClick={() => setShowPrivacyModal(true)}
+                    >
+                      Política de Privacidad
+                    </button>
                   </label>
                 </motion.div>
                 
@@ -408,24 +398,6 @@ const RegisterPage = () => {
                 </button>
               </motion.div>
             )}
-            
-            {/* Enlace a login */}
-            <motion.div
-              className="text-center text-white/80"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: success ? 0.5 : 1.4 }}
-            >
-              <p>
-                ¿Ya tienes una cuenta?{' '}
-                <a 
-                  href="/login" 
-                  className="text-[#aedd2b] font-medium hover:underline"
-                >
-                  Inicia sesión
-                </a>
-              </p>
-            </motion.div>
           </div>
           
           {/* Olas decorativas */}
@@ -471,7 +443,69 @@ const RegisterPage = () => {
             {icon}
           </motion.div>
         ))}
+        
+        {/* Enlace a login FUERA del formulario */}
+        <motion.div
+          className="mt-6 text-center text-white/80"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: success ? 0.5 : 1.4 }}
+        >
+          <p>
+            ¿Ya tienes una cuenta?{' '}
+            <button 
+              onClick={() => router.push('/login')}
+              className="text-[#aedd2b] font-medium hover:underline cursor-pointer"
+            >
+              Inicia sesión
+            </button>
+          </p>
+        </motion.div>
       </motion.div>
+
+      {/* Modal para Términos y Condiciones */}
+      <AnimatePresence>
+        {showTermsModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: -20 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="w-full max-w-2xl"
+            >
+              <TermsModal setShowTermsModal={setShowTermsModal} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal para Política de Privacidad */}
+      <AnimatePresence>
+        {showPrivacyModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: -20 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="w-full max-w-2xl"
+            >
+              <PrivacyModal setShowPrivacyModal={setShowPrivacyModal} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
