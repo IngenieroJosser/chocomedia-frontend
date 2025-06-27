@@ -15,7 +15,7 @@ const StorySection = () => {
     {
       title: "El Origen",
       icon: <FaSeedling />,
-      content: "En las tierras fértiles del Chocó, donde los ríos cantan historias ancestrales, nació un sueño: preservar y compartir la riqueza cultural que durante siglos había sido marginada. Vimos cómo creadores luchaban por dar a conocer sus obras, atrapadas en plataformas que no valoraban su esencia única.",
+      content: "Donde los ríos cantan historias ancestrales, nació un sueño: preservar y compartir la riqueza cultural que durante siglos había sido marginada. Vimos cómo creadores luchaban por dar a conocer sus obras, atrapadas en plataformas que no valoraban su esencia única.",
       color: "#012c4d"
     },
     {
