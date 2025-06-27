@@ -3,17 +3,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaCheck, FaArrowLeft } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
-const ForgotPassword = () => {
+interface ForgotPasswordProps {
+  onClose?: () => void;
+}
+
+const ForgotPassword = ({ onClose }: ForgotPasswordProps) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const formRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // Efecto de partículas flotantes
   useEffect(() => {
@@ -147,7 +148,7 @@ const ForgotPassword = () => {
             {/* Botón para volver */}
             <div className="mb-6">
               <button 
-                onClick={() => router.back()}
+                onClick={onClose}
                 className="flex items-center text-[#aedd2b] hover:text-[#9bc926] transition-colors"
               >
                 <FaArrowLeft className="mr-2" /> Volver

@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FaUser, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaTwitter, FaTimes } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ForgotPassword from '@/components/ui/auth/forgot-password';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,9 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   
   // Efecto de partículas flotantes (solo para dispositivos móviles)
@@ -61,6 +64,23 @@ const LoginPage = () => {
     };
   }, []);
 
+  // Cerrar modal al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setShowForgotPasswordModal(false);
+      }
+    };
+
+    if (showForgotPasswordModal) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showForgotPasswordModal]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -77,8 +97,16 @@ const LoginPage = () => {
     }, 1500);
   };
 
+  const openForgotPasswordModal = () => {
+    setShowForgotPasswordModal(true);
+  };
+
+  const closeForgotPasswordModal = () => {
+    setShowForgotPasswordModal(false);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012c4d] to-[#001a2d] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012c4d] to-[#001a2d] p-4 relative">
       {/* Fondo con animación */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         {[...Array(10)].map((_, i) => (
@@ -225,9 +253,12 @@ const LoginPage = () => {
                     Recordarme
                   </label>
                 </div>
-                <a href="#" className="text-sm text-[#aedd2b] hover:underline">
+                <button 
+                  onClick={openForgotPasswordModal}
+                  className="text-sm text-[#aedd2b] hover:underline"
+                >
                   ¿Olvidaste tu contraseña?
-                </a>
+                </button>
               </motion.div>
               
               {/* Botón de Login */}
@@ -311,7 +342,7 @@ const LoginPage = () => {
             
             {/* Registro */}
             <motion.div
-              className="text-center text-white/80 relative z-10" // Añadido z-index aquí
+              className="text-center text-white/80 relative z-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.3 }}
@@ -320,7 +351,7 @@ const LoginPage = () => {
                 ¿No tienes una cuenta?{' '}
                 <Link 
                   href="/register" 
-                  className="text-[#aedd2b] font-medium hover:underline relative z-20" // Añadido z-index aquí
+                  className="text-[#aedd2b] font-medium hover:underline relative z-20"
                   aria-label="Ir a la página de registro"
                   passHref
                 >
@@ -358,7 +389,7 @@ const LoginPage = () => {
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              zIndex: -1 // Asegura que estén detrás del contenido
+              zIndex: -1
             }}
             animate={{
               y: [0, -20, 0],
@@ -374,6 +405,28 @@ const LoginPage = () => {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Modal para recuperar contraseña */}
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <motion.div
+            ref={modalRef}
+            className="relative w-full max-w-md"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button
+              onClick={closeForgotPasswordModal}
+              className="absolute top-4 right-4 z-10 text-white hover:text-[#aedd2b] transition-colors"
+            >
+              <FaTimes className="text-xl" />
+            </button>
+            <ForgotPassword onClose={closeForgotPasswordModal} />
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
