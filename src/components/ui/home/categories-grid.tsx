@@ -68,10 +68,14 @@ const VoiceWave = ({ isActive, color }: { isActive: boolean; color: string }) =>
   );
 };
 
-const FloatingVoice = () => {
+const FloatingVoice = ({ position }: { position: { top: number, left: number } }) => {
   return (
     <motion.div
       className="absolute"
+      style={{
+        top: `${position.top}%`,
+        left: `${position.left}%`,
+      }}
       animate={{
         y: [0, -20, 0],
         x: [0, 10, 0],
@@ -123,8 +127,12 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
   const [isClicked, setIsClicked] = useState(false);
   const controls = useAnimation();
   const ref = useRef(null);
-  
+  const [isMounted, setIsMounted] = useState(false);
+  const [floatingVoices, setFloatingVoices] = useState<{top: number, left: number}[]>([]);
+
   useEffect(() => {
+    setIsMounted(true);
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -156,6 +164,18 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
       return () => clearTimeout(timer);
     }
   }, [isClicked]);
+
+  // Generar posiciones solo en el cliente
+  useEffect(() => {
+    if (isMounted && isHovered) {
+      const positions = [
+        { top: 25, left: 75 },
+        { top: 75, left: 25 },
+        { top: 35, left: 65 }
+      ];
+      setFloatingVoices(positions);
+    }
+  }, [isHovered, isMounted]);
 
   return (
     <motion.div
@@ -263,23 +283,11 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
       </div>
       
       {/* Floating voices */}
-      {isHovered && (
+      {isHovered && isMounted && (
         <>
-          <FloatingVoice />
-          <motion.div 
-            className="absolute top-1/4 right-4"
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 5, repeat: Infinity, delay: 0.5 }}
-          >
-            <FaHeadphones className="text-xl text-white/80" />
-          </motion.div>
-          <motion.div 
-            className="absolute bottom-1/3 left-6"
-            animate={{ y: [0, 15, 0] }}
-            transition={{ duration: 6, repeat: Infinity, delay: 0.8 }}
-          >
-            <FaHeadphones className="text-xl text-white/80" />
-          </motion.div>
+          {floatingVoices.map((position, index) => (
+            <FloatingVoice key={index} position={position} />
+          ))}
         </>
       )}
     </motion.div>
@@ -289,10 +297,21 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
 const GlobalStage = () => {
   const [isHovered, setIsHovered] = useState(false);
   const globeRef = useRef<HTMLDivElement>(null);
+  const [dots, setDots] = useState<{top: number, left: number}[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
+    setIsMounted(true);
+    
     if (!globeRef.current) return;
     
+    // Generar posiciones fijas para los puntos
+    const fixedDots = Array.from({ length: 12 }).map(() => ({
+      top: Math.random() * 100,
+      left: Math.random() * 100
+    }));
+    setDots(fixedDots);
+
     const handleMouseMove = (e: MouseEvent) => {
       if (!globeRef.current) return;
       
@@ -340,14 +359,14 @@ const GlobalStage = () => {
         ))}
       </div>
       
-      {/* Floating connection dots */}
-      {[...Array(12)].map((_, i) => (
+      {/* Floating connection dots - con posiciones pregeneradas */}
+      {isMounted && dots.map((dot, i) => (
         <motion.div
           key={i}
           className="absolute w-3 h-3 rounded-full bg-[#aedd2b]"
           style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
+            top: `${dot.top}%`,
+            left: `${dot.left}%`,
           }}
           animate={{ 
             scale: [1, 1.5, 1],
@@ -488,23 +507,30 @@ const CategoriesGrid = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const [voices, setVoices] = useState<{id: number, x: number, y: number}[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
+    setIsMounted(true);
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           controls.start("visible");
           
-          // Create floating voices
-          const newVoices = [];
-          for (let i = 0; i < 15; i++) {
-            newVoices.push({
-              id: i,
-              x: Math.random() * 100,
-              y: Math.random() * 100
-            });
-          }
-          setVoices(newVoices);
+          // Crear voces flotantes con posiciones fijas
+          const fixedVoices = [
+            { id: 1, x: 15, y: 25 },
+            { id: 2, x: 85, y: 15 },
+            { id: 3, x: 25, y: 75 },
+            { id: 4, x: 75, y: 65 },
+            { id: 5, x: 45, y: 45 },
+            { id: 6, x: 60, y: 30 },
+            { id: 7, x: 30, y: 60 },
+            { id: 8, x: 70, y: 40 },
+            { id: 9, x: 20, y: 50 },
+            { id: 10, x: 50, y: 20 }
+          ];
+          setVoices(fixedVoices);
         }
       },
       { threshold: 0.1 }
@@ -534,7 +560,7 @@ const CategoriesGrid = () => {
   return (
     <div className="container mx-auto px-4 py-16 relative overflow-hidden min-h-screen">
       {/* Floating voices in background */}
-      {voices.map(voice => (
+      {isMounted && voices.map(voice => (
         <motion.div
           key={voice.id}
           className="absolute text-[#aedd2b]"
