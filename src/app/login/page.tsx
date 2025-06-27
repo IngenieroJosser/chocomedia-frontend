@@ -169,7 +169,7 @@ const LoginPage = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              Bienvenido a <span className="text-[#aedd2b]">CulturaVoz - ChocóMedia</span>
+              Bienvenido a <span className="text-[#aedd2b]">SENDA</span>
             </motion.h1>
             
             <motion.p 

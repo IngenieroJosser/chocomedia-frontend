@@ -147,7 +147,7 @@ const Header = () => {
                   onMouseLeave={() => setHoveredItem(null)}
                 >
                   <div className="absolute w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm animate-pulse-slow"></div>
-                  <span className="absolute text-[#02416d] font-extrabold text-xl">C</span>
+                  <span className="absolute text-[#02416d] font-extrabold text-xl">S</span>
                   
                   {/* Efecto de partículas */}
                   {hoveredItem === "logo" && (
@@ -168,7 +168,7 @@ const Header = () => {
                   )}
                 </motion.div>
                 <div className="flex flex-col">
-                  <span className="text-white font-bold text-xl tracking-wider">CHOCOMEDIA</span>
+                  <span className="text-white font-bold text-xl tracking-wider">SENDA</span>
                   <span className="text-[#aedd2b] text-xs font-light tracking-widest">WORLDWIDE</span>
                 </div>
               </Link>
@@ -299,7 +299,7 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <p>Chocomedia © {new Date().getFullYear()}</p>
+                <p>Senda © {new Date().getFullYear()}</p>
                 <p className="mt-1">Conectando culturas a través de la voz</p>
               </motion.div>
             </motion.div>

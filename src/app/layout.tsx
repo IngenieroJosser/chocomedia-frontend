@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CulturaVoz - Chocomedia",
-  description: "Chocomedia es un espacio para compartir historias de cultura y diversidad.",
+  title: "Senda - Plataforma de contenido cultural",
+  description: "Senda es un espacio para compartir historias de cultura y diversidad.",
 };
 
 export default function RootLayout({

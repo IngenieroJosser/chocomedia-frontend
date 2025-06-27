@@ -406,7 +406,7 @@ const ChocoLive = () => {
           ease: "easeInOut"
         }}
       >
-        #CulturaVoz
+        #SENDA
       </motion.div>
     </div>
   );

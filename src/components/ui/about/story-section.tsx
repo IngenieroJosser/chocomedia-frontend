@@ -33,7 +33,7 @@ const StorySection = () => {
     {
       title: "La Solución",
       icon: <FaLockOpen />,
-      content: "Nació CulturaVoz - ChocóMedia: una plataforma donde cada contenido cuenta historias que merecen ser escuchadas. Implementamos un sistema accesible que permite a creadores publicar fácilmente mientras los usuarios descubren joyas culturales adaptadas a sus intereses.",
+      content: "Nació Senda: una plataforma donde cada contenido cuenta historias que merecen ser escuchadas. Implementamos un sistema accesible que permite a creadores publicar fácilmente mientras los usuarios descubren joyas culturales adaptadas a sus intereses.",
       color: "#02416d"
     },
     {

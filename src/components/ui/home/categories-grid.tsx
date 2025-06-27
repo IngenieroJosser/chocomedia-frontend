@@ -619,7 +619,7 @@ const CategoriesGrid = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.5 }}
       >
-        <div className="text-6xl font-bold mb-4">CulturaVoz</div>
+        <div className="text-6xl font-bold mb-4">SENDA</div>
         <p className="text-xl max-w-2xl mx-auto mb-8">
           Donde cada voz encuentra su eco y cada historia su audiencia
         </p>
@@ -627,7 +627,7 @@ const CategoriesGrid = () => {
         <div className="h-px bg-gradient-to-r from-transparent via-[#02416d] to-transparent w-1/2 mx-auto my-12"></div>
         
         <div className="flex justify-center gap-8 mb-4">
-          {['🌎', '🎤', '🎧', '📢', '🗣️', '👂'].map((icon, i) => (
+          {['🌎', '🎤', '🎧', '📢', '🗣️', '👂🏾'].map((icon, i) => (
             <motion.div
               key={i}
               animate={{ 

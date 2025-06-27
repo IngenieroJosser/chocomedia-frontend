@@ -50,7 +50,7 @@ const Footer = () => {
                 <span className="absolute text-[#02416d] font-extrabold text-xl">C</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-white font-bold text-xl tracking-wider">CHOCOMEDIA</span>
+                <span className="text-white font-bold text-xl tracking-wider">SENDA</span>
                 <span className="text-[#aedd2b] text-xs font-light tracking-widest">WORLDWIDE</span>
               </div>
             </div>
@@ -224,7 +224,7 @@ const Footer = () => {
               <div className="flex items-center">
                 <MdEmail className="text-[#aedd2b] mr-3" />
                 <span className="text-white/80">
-                  hola@chocomedia.com
+                  hola@senda.com
                 </span>
               </div>
             </div>
@@ -243,7 +243,7 @@ const Footer = () => {
         {/* Pie de página inferior */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-white/60 text-sm mb-4 md:mb-0">
-            &copy; {currentYear} Chocomedia. Todos los derechos reservados.
+            &copy; {currentYear} Senda. Todos los derechos reservados.
           </div>
           
           <div className="flex flex-wrap justify-center gap-6">
@@ -280,7 +280,7 @@ const Footer = () => {
           ease: "easeInOut"
         }}
       >
-        CULTURA
+        CULTURASENDA
       </motion.div>
     </footer>
   );
