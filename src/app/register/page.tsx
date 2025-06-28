@@ -6,124 +6,127 @@ import { FaUser, FaLock, FaEye, FaEyeSlash, FaEnvelope, FaGoogle, FaFacebook, Fa
 import { useRouter } from 'next/navigation';
 import TermsModal from '@/components/ui/auth/terms-and-conditions';
 import PrivacyModal from '@/components/ui/auth/privacy-policy';
+import { ICreateAccount } from '@/lib/auth';
+import { createAccount } from '@/services/auth-service';
 
 const RegisterPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formDataRegister, setFormDataRegister] = useState<ICreateAccount>({
+    name: '',
+    email: '',
+    password: ''
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [activeField, setActiveField] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   
-  // Efecto de partículas culturales
+  // Efecto de fondo holográfico
   useEffect(() => {
     if (!formRef.current) return;
     
-    const createParticle = () => {
-      const particle = document.createElement("div");
-      particle.className = "absolute rounded-full";
+    const createHolographicEffect = () => {
+      const container = formRef.current!;
+      const effect = document.createElement('div');
+      effect.className = 'absolute inset-0 pointer-events-none opacity-30';
       
-      // Tamaño y color aleatorio
-      const size = Math.random() * 8 + 2;
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
+      // Patrón de líneas holográficas
+      for (let i = 0; i < 20; i++) {
+        const line = document.createElement('div');
+        line.className = 'absolute h-px bg-[#aedd2b] rounded-full';
+        line.style.top = `${Math.random() * 100}%`;
+        line.style.left = '0';
+        line.style.width = '100%';
+        line.style.opacity = `${Math.random() * 0.3 + 0.1}`;
+        
+        effect.appendChild(line);
+      }
       
-      // Colores temáticos
-      const colors = ["#aedd2b", "#9bc926", "#c5f04a", "#02416d", "#012c4d"];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      particle.style.backgroundColor = color;
+      container.appendChild(effect);
       
-      // Posición aleatoria dentro del formulario
-      const formRect = formRef.current!.getBoundingClientRect();
-      particle.style.left = `${Math.random() * formRect.width}px`;
-      particle.style.top = `${Math.random() * formRect.height}px`;
-      
-      // Animación
-      particle.animate(
-        [
-          { opacity: 1, transform: "scale(1)" },
-          { opacity: 0, transform: "scale(0)" }
-        ],
-        {
-          duration: Math.random() * 3000 + 2000,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
-        }
-      ).onfinish = () => particle.remove();
-      
-      formRef.current!.appendChild(particle);
+      // Animación de líneas
+      const lines = effect.querySelectorAll('div');
+      lines.forEach((line, i) => {
+        const duration = 10 + Math.random() * 10;
+        line.animate(
+          [
+            { transform: 'translateY(0px)', opacity: 0.1 },
+            { transform: `translateY(${Math.random() * 40 - 20}px)`, opacity: 0.5 },
+            { transform: `translateY(${Math.random() * 40 - 20}px)`, opacity: 0.1 }
+          ],
+          {
+            duration: duration * 1000,
+            iterations: Infinity,
+            easing: 'ease-in-out'
+          }
+        );
+      });
     };
     
-    let interval: NodeJS.Timeout;
-    interval = setInterval(createParticle, 300);
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+    createHolographicEffect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormDataRegister(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitCreateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
-    // Validaciones básicas
-    if (!name || !email || !password || !confirmPassword) {
+    if (!formDataRegister.name || !formDataRegister.email || !formDataRegister.password) {
       setError('Todos los campos son obligatorios');
       return;
     }
     
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      return;
-    }
-    
-    if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+    if (formDataRegister.password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
       return;
     }
     
     setIsLoading(true);
     
-    // Simulación de registro
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      await createAccount(formDataRegister);
       setSuccess(true);
       
-      // Redirigir después de 2 segundos
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/login');
       }, 2000);
-    }, 2000);
+    } catch (error: any) {
+      setError(error.response?.data?.message || 'Error al registrar la cuenta');
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012c4d] to-[#001a2d] p-4">
-      {/* Fondo con animación fluvial */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(15)].map((_, i) => (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#001a2d] to-[#000f1c] p-4 overflow-hidden relative">
+      {/* Efecto de partículas de fondo */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute h-0.5 bg-[#aedd2b] rounded-full"
+            className="absolute rounded-full bg-[#aedd2b]"
             style={{
+              width: `${Math.random() * 6 + 2}px`,
+              height: `${Math.random() * 6 + 2}px`,
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 100 + 50}%`,
+              opacity: 0.3
             }}
             animate={{
-              x: ['-100%', '100%'],
-              opacity: [0.1, 0.5, 0.1],
+              y: [0, -20, 0],
+              x: [0, Math.random() * 40 - 20, 0]
             }}
             transition={{
-              duration: 15 + Math.random() * 20,
+              duration: 5 + Math.random() * 10,
               repeat: Infinity,
-              delay: Math.random() * 10,
-              ease: "linear"
+              ease: "easeInOut"
             }}
           />
         ))}
@@ -133,33 +136,59 @@ const RegisterPage = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md"
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="relative w-full max-w-md z-10"
       >
-        {/* Formulario */}
+        {/* Formulario con efecto de vidrio y borde luminoso */}
         <motion.div
           ref={formRef}
-          className="bg-[#012c4d]/90 backdrop-blur-lg rounded-3xl border border-[#aedd2b]/30 shadow-2xl overflow-hidden relative"
-          initial={{ y: 20, opacity: 0 }}
+          className="bg-[#012c4d]/70 backdrop-blur-2xl rounded-3xl border border-[#aedd2b]/40 shadow-2xl overflow-hidden relative"
+          initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          style={{
+            boxShadow: '0 0 30px rgba(2, 65, 109, 0.7), 0 0 60px rgba(174, 221, 43, 0.3)'
+          }}
         >
-          {/* Efecto de luz superior */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-[#aedd2b] animate-pulse-slow"></div>
+          {/* Efecto de borde luminoso animado */}
+          <motion.div 
+            className="absolute inset-0 rounded-3xl pointer-events-none"
+            animate={{
+              boxShadow: [
+                `inset 0 0 10px rgba(174, 221, 43, 0.3)`,
+                `inset 0 0 20px rgba(174, 221, 43, 0.5)`,
+                `inset 0 0 10px rgba(174, 221, 43, 0.3)`
+              ]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity
+            }}
+          />
           
           <div className="p-8 sm:p-10">
-            {/* Logo y título */}
+            {/* Logo y título con efecto de gradiente */}
             <motion.div 
-              className="flex flex-col items-center mb-8"
+              className="flex flex-col items-center mb-10"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.4, type: "spring" }}
+              transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
             >
-              <div className="bg-[#aedd2b] rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                <FaSeedling className="text-[#02416d] text-2xl" />
-              </div>
+              <motion.div 
+                className="bg-gradient-to-br from-[#aedd2b] to-[#9bc926] rounded-full w-20 h-20 flex items-center justify-center mb-4 shadow-lg"
+                animate={{ 
+                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                }}
+              >
+                <FaSeedling className="text-[#02416d] text-3xl" />
+              </motion.div>
               <h1 className="text-3xl font-bold text-center text-white">
-                Únete a <span className="text-[#aedd2b]">ChocóMedia</span>
+                Únete a <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#aedd2b] to-[#9bc926]">ChocóMedia</span>
               </h1>
               <p className="text-center text-white/80 mt-2">
                 Comienza tu viaje cultural
@@ -169,9 +198,10 @@ const RegisterPage = () => {
             {/* Mensaje de éxito */}
             {success && (
               <motion.div
-                className="mb-6 p-4 bg-[#aedd2b]/20 border border-[#aedd2b] text-[#aedd2b] rounded-xl text-center"
+                className="mb-6 p-4 bg-gradient-to-r from-[#aedd2b]/20 to-[#9bc926]/20 border border-[#aedd2b] text-[#aedd2b] rounded-xl text-center backdrop-blur-sm"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
+                transition={{ duration: 0.5 }}
               >
                 <p className="font-medium">¡Registro exitoso!</p>
                 <p className="text-sm mt-1">Redirigiendo a tu panel...</p>
@@ -180,81 +210,105 @@ const RegisterPage = () => {
             
             {/* Formulario */}
             {!success && (
-              <form onSubmit={handleSubmit}>
-                {/* Campo Nombre */}
+              <form onSubmit={handleSubmitCreateAccount}>
+                {/* Campo Nombre con efecto de foco */}
                 <motion.div
-                  className="mb-5"
-                  initial={{ opacity: 0, y: 10 }}
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
+                  onFocus={() => setActiveField('name')}
+                  onBlur={() => setActiveField(null)}
                 >
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <FaUser className="text-[#aedd2b]" />
+                      <FaUser className={`transition-colors ${activeField === 'name' ? 'text-[#aedd2b] scale-110' : 'text-[#aedd2b]/70'}`} />
                     </div>
                     <input
                       type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
+                      name="name"
+                      value={formDataRegister.name}
+                      onChange={handleChangeForm}
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
                       placeholder="Nombre completo"
                       required
+                    />
+                    <motion.div 
+                      className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#aedd2b] to-[#9bc926] ${activeField === 'name' ? 'w-full' : 'w-0'}`}
+                      animate={{ width: activeField === 'name' ? '100%' : '0%' }}
+                      transition={{ duration: 0.3 }}
                     />
                   </div>
                 </motion.div>
                 
                 {/* Campo Email */}
                 <motion.div
-                  className="mb-5"
-                  initial={{ opacity: 0, y: 10 }}
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
+                  onFocus={() => setActiveField('email')}
+                  onBlur={() => setActiveField(null)}
                 >
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <FaEnvelope className="text-[#aedd2b]" />
+                      <FaEnvelope className={`transition-colors ${activeField === 'email' ? 'text-[#aedd2b] scale-110' : 'text-[#aedd2b]/70'}`} />
                     </div>
                     <input
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
+                      name="email"
+                      value={formDataRegister.email}
+                      onChange={handleChangeForm}
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
                       placeholder="Correo electrónico"
                       required
+                    />
+                    <motion.div 
+                      className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#aedd2b] to-[#9bc926] ${activeField === 'email' ? 'w-full' : 'w-0'}`}
+                      animate={{ width: activeField === 'email' ? '100%' : '0%' }}
+                      transition={{ duration: 0.3 }}
                     />
                   </div>
                 </motion.div>
                 
                 {/* Campo Contraseña */}
                 <motion.div
-                  className="mb-5"
-                  initial={{ opacity: 0, y: 10 }}
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
+                  onFocus={() => setActiveField('password')}
+                  onBlur={() => setActiveField(null)}
                 >
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <FaLock className="text-[#aedd2b]" />
+                      <FaLock className={`transition-colors ${activeField === 'password' ? 'text-[#aedd2b] scale-110' : 'text-[#aedd2b]/70'}`} />
                     </div>
                     <input
                       type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-12 pr-12 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
-                      placeholder="*******"
+                      name="password"
+                      value={formDataRegister.password}
+                      onChange={handleChangeForm}
+                      className="w-full pl-12 pr-12 py-3.5 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
+                      placeholder="Contraseña"
                       required
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#aedd2b]"
+                      className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#aedd2b] hover:text-[#9bc926] transition-colors"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
+                    <motion.div 
+                      className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#aedd2b] to-[#9bc926] ${activeField === 'password' ? 'w-full' : 'w-0'}`}
+                      animate={{ width: activeField === 'password' ? '100%' : '0%' }}
+                      transition={{ duration: 0.3 }}
+                    />
                   </div>
                 </motion.div>
                 
-                {/* Indicador de seguridad de contraseña */}
+                {/* Indicador de seguridad de contraseña animado */}
                 <motion.div
                   className="mb-6"
                   initial={{ opacity: 0 }}
@@ -263,20 +317,24 @@ const RegisterPage = () => {
                 >
                   <div className="flex items-center mb-1">
                     {[1, 2, 3].map((level) => (
-                      <div
+                      <motion.div
                         key={level}
-                        className={`flex-grow h-1 mx-1 rounded-full ${
-                          password.length < 6 ? 'bg-red-500/50' :
-                          password.length < 8 ? (level <= 2 ? 'bg-orange-500' : 'bg-gray-700') :
-                          level <= 3 ? 'bg-[#aedd2b]' : 'bg-gray-700'
+                        className={`flex-grow h-1.5 mx-1 rounded-full ${
+                          formDataRegister.password.length < 6 ? 'bg-red-500/50' :
+                          formDataRegister.password.length < 8 ? (level <= 2 ? 'bg-orange-500' : 'bg-[#02416d]') :
+                          level <= 3 ? 'bg-[#aedd2b]' : 'bg-[#02416d]'
                         }`}
-                      ></div>
+                        animate={{ 
+                          scaleY: formDataRegister.password.length > 0 ? [1, 1.5, 1] : 1 
+                        }}
+                        transition={{ duration: 0.5, delay: level * 0.1 }}
+                      />
                     ))}
                   </div>
                   <p className="text-xs text-white/60">
-                    {password.length < 6 
+                    {formDataRegister.password.length < 6 
                       ? 'Contraseña débil' 
-                      : password.length < 8 
+                      : formDataRegister.password.length < 8 
                         ? 'Contraseña media' 
                         : 'Contraseña fuerte'}
                   </p>
@@ -284,7 +342,7 @@ const RegisterPage = () => {
                 
                 {/* Términos y condiciones */}
                 <motion.div
-                  className="flex items-start mb-6"
+                  className="flex items-start mb-8"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.0 }}
@@ -292,14 +350,14 @@ const RegisterPage = () => {
                   <input
                     type="checkbox"
                     id="terms"
-                    className="mt-1 w-4 h-4 text-[#aedd2b] bg-gray-700 border-gray-600 rounded focus:ring-[#aedd2b] focus:ring-2"
+                    className="mt-1 w-5 h-5 text-[#aedd2b] bg-[#02416d]/50 border-[#aedd2b]/50 rounded focus:ring-[#aedd2b] focus:ring-2"
                     required
                   />
-                  <label htmlFor="terms" className="ml-2 text-sm text-white">
+                  <label htmlFor="terms" className="ml-3 text-sm text-white">
                     Acepto los 
                     <button 
                       type="button"
-                      className="text-[#aedd2b] hover:underline mx-1"
+                      className="text-[#aedd2b] hover:underline mx-1 font-medium"
                       onClick={() => setShowTermsModal(true)}
                     >
                       Términos y Condiciones
@@ -307,7 +365,7 @@ const RegisterPage = () => {
                     y la 
                     <button 
                       type="button"
-                      className="text-[#aedd2b] hover:underline ml-1"
+                      className="text-[#aedd2b] hover:underline ml-1 font-medium"
                       onClick={() => setShowPrivacyModal(true)}
                     >
                       Política de Privacidad
@@ -315,38 +373,34 @@ const RegisterPage = () => {
                   </label>
                 </motion.div>
                 
-                {/* Botón de Registro */}
+                {/* Botón de Registro con efecto de gradiente */}
                 <motion.button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-xl text-lg font-bold transition-all relative overflow-hidden ${
+                  className={`w-full py-4 px-4 rounded-xl text-lg font-bold transition-all relative overflow-hidden group ${
                     isLoading 
-                      ? 'bg-[#aedd2b]/70 cursor-not-allowed' 
-                      : 'bg-[#aedd2b] hover:bg-[#9bc926]'
+                      ? 'bg-gradient-to-r from-[#aedd2b]/70 to-[#9bc926]/70 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-[#aedd2b] to-[#9bc926] hover:opacity-90'
                   }`}
                   disabled={isLoading}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.1 }}
-                  whileHover={{ scale: isLoading ? 1 : 1.03 }}
+                  whileHover={{ scale: isLoading ? 1 : 1.02 }}
                   whileTap={{ scale: isLoading ? 1 : 0.98 }}
                 >
                   {isLoading ? (
                     <div className="flex justify-center">
-                      <div className="w-6 h-6 border-t-2 border-[#02416d] border-solid rounded-full animate-spin"></div>
+                      <motion.div
+                        className="w-6 h-6 border-t-2 border-[#02416d] border-solid rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      />
                     </div>
                   ) : (
                     <>
-                      <span className="relative z-10 text-[#02416d]">Crear Cuenta</span>
+                      <span className="relative z-10 text-[#02416d] font-bold">Crear Cuenta</span>
                       <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                        initial={{ x: '-100%' }}
-                        animate={{ x: '100%' }}
-                        transition={{ 
-                          duration: 1.5, 
-                          repeat: Infinity,
-                          repeatType: "loop",
-                          ease: "easeInOut"
-                        }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-500"
                       />
                     </>
                   )}
@@ -355,9 +409,10 @@ const RegisterPage = () => {
                 {/* Mensaje de error */}
                 {error && (
                   <motion.div
-                    className="mt-4 p-3 bg-red-500/20 border border-red-500/50 text-red-300 rounded-xl text-sm"
+                    className="mt-5 p-3 bg-gradient-to-r from-red-500/20 to-red-600/20 border border-red-500/50 text-red-300 rounded-xl text-sm backdrop-blur-sm"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.3 }}
                   >
                     {error}
                   </motion.div>
@@ -365,7 +420,7 @@ const RegisterPage = () => {
               </form>
             )}
             
-            {/* Separador */}
+            {/* Separador animado */}
             {!success && (
               <motion.div
                 className="flex items-center my-8"
@@ -373,34 +428,54 @@ const RegisterPage = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2 }}
               >
-                <div className="flex-grow h-px bg-[#aedd2b]/30"></div>
+                <motion.div 
+                  className="flex-grow h-px bg-[#aedd2b]/30"
+                  animate={{ width: ['0%', '100%'] }}
+                  transition={{ duration: 0.8 }}
+                />
                 <span className="mx-4 text-white/60 text-sm">O regístrate con</span>
-                <div className="flex-grow h-px bg-[#aedd2b]/30"></div>
+                <motion.div 
+                  className="flex-grow h-px bg-[#aedd2b]/30"
+                  animate={{ width: ['0%', '100%'] }}
+                  transition={{ duration: 0.8 }}
+                />
               </motion.div>
             )}
             
-            {/* Botones de redes sociales */}
+            {/* Botones de redes sociales con efecto de elevación */}
             {!success && (
               <motion.div
-                className="grid grid-cols-3 gap-4 mb-8"
-                initial={{ opacity: 0, y: 10 }}
+                className="grid grid-cols-3 gap-4 mb-6"
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.3 }}
               >
-                <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+                <motion.button
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center"
+                >
                   <FaGoogle className="text-white text-xl" />
-                </button>
-                <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+                </motion.button>
+                <motion.button
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center"
+                >
                   <FaFacebook className="text-white text-xl" />
-                </button>
-                <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+                </motion.button>
+                <motion.button
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center"
+                >
                   <FaTwitter className="text-white text-xl" />
-                </button>
+                </motion.button>
               </motion.div>
             )}
           </div>
           
-          {/* Olas decorativas */}
+          {/* Olas decorativas animadas */}
           <div className="absolute bottom-0 left-0 right-0 h-16 overflow-hidden opacity-30">
             <motion.div
               className="absolute bottom-0 w-200 h-full bg-no-repeat"
@@ -424,18 +499,18 @@ const RegisterPage = () => {
         {['🎭', '📖', '🎨', '🎬', '🎙️', '🥁', '📚', '🎤'].map((icon, index) => (
           <motion.div
             key={index}
-            className="absolute text-3xl text-[#aedd2b]"
+            className="absolute text-4xl text-[#aedd2b] opacity-50"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${10 + index * 10}%`,
+              left: `${Math.random() * 90 + 5}%`,
               zIndex: -1
             }}
             animate={{
-              y: [0, -20, 0],
-              rotate: [0, 10, -10, 0]
+              y: [0, -30, 0],
+              rotate: [0, 15, -15, 0]
             }}
             transition={{
-              duration: 5 + Math.random() * 10,
+              duration: 8 + index * 2,
               repeat: Infinity,
               ease: "easeInOut"
             }}
@@ -444,64 +519,87 @@ const RegisterPage = () => {
           </motion.div>
         ))}
         
-        {/* Enlace a login FUERA del formulario */}
+        {/* Enlace a login con efecto de brillo */}
         <motion.div
-          className="mt-6 text-center text-white/80"
+          className="mt-8 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: success ? 0.5 : 1.4 }}
         >
-          <p>
+          <p className="text-white/80">
             ¿Ya tienes una cuenta?{' '}
-            <button 
+            <motion.button 
               onClick={() => router.push('/login')}
-              className="text-[#aedd2b] font-medium hover:underline cursor-pointer"
+              className="text-[#aedd2b] font-bold hover:underline cursor-pointer relative"
+              whileHover={{ scale: 1.05 }}
             >
-              Inicia sesión
-            </button>
+              <span>Inicia sesión</span>
+              <motion.span 
+                className="absolute bottom-0 left-0 w-full h-0.5 bg-[#aedd2b]"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.button>
           </p>
         </motion.div>
       </motion.div>
 
-      {/* Modal para Términos y Condiciones */}
+      {/* Modal para Términos y Condiciones con efecto 3D */}
       <AnimatePresence>
         {showTermsModal && (
           <motion.div
-            className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              initial={{ scale: 0.8, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: -20 }}
-              transition={{ type: "spring", damping: 25 }}
-              className="w-full max-w-2xl"
+              initial={{ scale: 0.8, y: 40, rotateX: 45 }}
+              animate={{ scale: 1, y: 0, rotateX: 0 }}
+              exit={{ scale: 0.8, y: -40, rotateX: -45 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="w-full max-w-2xl bg-gradient-to-b from-[#012c4d] to-[#001a2d] rounded-2xl border border-[#aedd2b]/40 shadow-2xl overflow-hidden"
+              style={{
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
             >
-              <TermsModal setShowTermsModal={setShowTermsModal} />
+              <div className="p-1 bg-gradient-to-r from-[#aedd2b] to-[#9bc926]">
+                <div className="bg-[#012c4d] p-6">
+                  <TermsModal setShowTermsModal={setShowTermsModal} />
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Modal para Política de Privacidad */}
+      {/* Modal para Política de Privacidad con efecto 3D */}
       <AnimatePresence>
         {showPrivacyModal && (
           <motion.div
-            className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              initial={{ scale: 0.8, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: -20 }}
-              transition={{ type: "spring", damping: 25 }}
-              className="w-full max-w-2xl"
+              initial={{ scale: 0.8, y: 40, rotateX: 45 }}
+              animate={{ scale: 1, y: 0, rotateX: 0 }}
+              exit={{ scale: 0.8, y: -40, rotateX: -45 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="w-full max-w-2xl bg-gradient-to-b from-[#012c4d] to-[#001a2d] rounded-2xl border border-[#aedd2b]/40 shadow-2xl overflow-hidden"
+              style={{
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
             >
-              <PrivacyModal setShowPrivacyModal={setShowPrivacyModal} />
+              <div className="p-1 bg-gradient-to-r from-[#aedd2b] to-[#9bc926]">
+                <div className="bg-[#012c4d] p-6">
+                  <PrivacyModal setShowPrivacyModal={setShowPrivacyModal} />
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

@@ -6,22 +6,34 @@ import { FaUser, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook, FaTwitter, FaT
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ForgotPassword from '@/components/ui/auth/forgot-password';
+import { IValidateAccount } from '@/lib/auth';
+import { validateAccount } from '@/services/auth-service';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [formDataLogin, setFormDataLogin] = useState<IValidateAccount>({
+    email: '',
+    password: ''
+  });
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [success, setSuccess] = useState(false);
+  const [isClient, setIsClient] = useState(false); // Nuevo estado para controlar renderizado en cliente
+
   const router = useRouter();
   
+  // Efecto para marcar que estamos en el cliente
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Efecto de partículas flotantes (solo para dispositivos móviles)
   useEffect(() => {
-    if (!formRef.current) return;
+    if (!formRef.current || !isClient) return;
     
     // Detectar si es dispositivo móvil
     const isMobile = window.innerWidth < 768;
@@ -62,7 +74,7 @@ const LoginPage = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, []);
+  }, [isClient]); // Dependencia añadida
 
   // Cerrar modal al hacer clic fuera
   useEffect(() => {
@@ -81,23 +93,39 @@ const LoginPage = () => {
     };
   }, [showForgotPasswordModal]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormDataLogin(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitValidateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
-    // Simulación de autenticación
-    setTimeout(() => {
-      if (email === 'usuario@ejemplo.com' && password === 'password123') {
-        router.push('/explore');
-      } else {
-        setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
-      }
+    if (!formDataLogin.email || !formDataLogin.password) {
+      setError('Todos los campos son requeridos');
       setIsLoading(false);
-    }, 1500);
+      return;
+    }
+
+    try {
+      await validateAccount(formDataLogin);
+      setSuccess(true);
+      setIsLoading(false);
+
+      setTimeout(() => {
+        router.push('/explore');
+      }, 2000);
+
+    } catch (error: any) {
+      setError(error.response?.data?.message || 'Credenciales invalidas');
+      setIsLoading(false);
+    }
   };
 
-  const openForgotPasswordModal = () => {
+  const openForgotPasswordModal = (e: React.MouseEvent) => {
+    e.preventDefault();
     setShowForgotPasswordModal(true);
   };
 
@@ -105,32 +133,51 @@ const LoginPage = () => {
     setShowForgotPasswordModal(false);
   };
 
+  // Generar posiciones solo en cliente
+  const riverLines = isClient 
+    ? Array.from({ length: 10 }).map(() => ({
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        width: Math.random() * 100 + 50,
+      }))
+    : [];
+
+  const floatingIcons = isClient
+    ? ['🎭', '📖', '🎨', '🎬', '🎙️', '🥁'].map(icon => ({
+        icon,
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+      }))
+    : [];
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012c4d] to-[#001a2d] p-4 relative">
-      {/* Fondo con animación */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute h-0.5 bg-[#aedd2b] rounded-full"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 100 + 50}%`,
-            }}
-            animate={{
-              x: ['-100%', '100%'],
-              opacity: [0.1, 0.5, 0.1],
-            }}
-            transition={{
-              duration: 15 + Math.random() * 20,
-              repeat: Infinity,
-              delay: Math.random() * 10,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
+      {/* Fondo con animación - Solo en cliente */}
+      {isClient && (
+        <div className="absolute inset-0 overflow-hidden opacity-20">
+          {riverLines.map((line, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-0.5 bg-[#aedd2b] rounded-full"
+              style={{
+                top: `${line.top}%`,
+                left: `${line.left}%`,
+                width: `${line.width}%`,
+              }}
+              animate={{
+                x: ['-100%', '100%'],
+                opacity: [0.1, 0.5, 0.1],
+              }}
+              transition={{
+                duration: 15 + Math.random() * 20,
+                repeat: Infinity,
+                delay: Math.random() * 10,
+                ease: "linear"
+              }}
+            />
+          ))}
+        </div>
+      )}
       
       {/* Contenedor principal */}
       <motion.div
@@ -182,7 +229,7 @@ const LoginPage = () => {
             </motion.p>
             
             {/* Formulario */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitValidateAccount}>
               {/* Campo Email */}
               <motion.div
                 className="mb-6"
@@ -196,8 +243,9 @@ const LoginPage = () => {
                   </div>
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name='email'
+                    value={formDataLogin.email}
+                    onChange={handleChangeForm}
                     className="w-full pl-12 pr-4 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
                     placeholder="Correo electrónico"
                     required
@@ -218,8 +266,9 @@ const LoginPage = () => {
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    name='password'
+                    value={formDataLogin.password}
+                    onChange={handleChangeForm}
                     className="w-full pl-12 pr-12 py-3 bg-[#02416d]/30 backdrop-blur-sm rounded-xl border border-[#aedd2b]/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#aedd2b] transition-all"
                     placeholder="*******"
                     required
@@ -298,6 +347,17 @@ const LoginPage = () => {
                 )}
               </motion.button>
               
+              {/* Mensaje de éxito */}
+              {success && (
+                <motion.div
+                  className="mt-4 p-3 bg-green-500/20 border border-green-500/50 text-green-300 rounded-xl text-sm"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                >
+                  ¡Inicio de sesión exitoso! Redirigiendo...
+                </motion.div>
+              )}
+              
               {/* Mensaje de error */}
               {error && (
                 <motion.div
@@ -329,13 +389,13 @@ const LoginPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2 }}
             >
-              <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+              <button aria-label='Icono de Google' className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
                 <FaGoogle className="text-white text-xl" />
               </button>
-              <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+              <button aria-label='Icono de Facebook' className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
                 <FaFacebook className="text-white text-xl" />
               </button>
-              <button className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
+              <button aria-label='Icono de Twitter - X' className="bg-[#02416d]/50 backdrop-blur-sm py-3 rounded-xl border border-[#aedd2b]/20 hover:bg-[#aedd2b]/10 transition-colors flex items-center justify-center">
                 <FaTwitter className="text-white text-xl" />
               </button>
             </motion.div>
@@ -381,14 +441,14 @@ const LoginPage = () => {
           </div>
         </motion.div>
         
-        {/* Elementos decorativos flotantes */}
-        {['🎭', '📖', '🎨', '🎬', '🎙️', '🥁'].map((icon, index) => (
+        {/* Elementos decorativos flotantes - Solo en cliente */}
+        {isClient && floatingIcons.map(({icon, top, left}, index) => (
           <motion.div
             key={index}
             className="absolute text-3xl text-[#aedd2b]"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              top: `${top}%`,
+              left: `${left}%`,
               zIndex: -1
             }}
             animate={{
@@ -418,6 +478,7 @@ const LoginPage = () => {
             transition={{ duration: 0.3 }}
           >
             <button
+              aria-label='Cerrar el modal de olvidar contraseña'
               onClick={closeForgotPasswordModal}
               className="absolute top-4 right-4 z-10 text-white hover:text-[#aedd2b] transition-colors"
             >
