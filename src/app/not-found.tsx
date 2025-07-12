@@ -185,7 +185,7 @@ export default function NotFound() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          La página que buscas se ha perdido en el espacio exterior.
+          La página que buscas se ha perdido culturalmente en el espacio exterior.
         </motion.p>
         
         <motion.div
