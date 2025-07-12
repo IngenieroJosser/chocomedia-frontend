@@ -36,9 +36,11 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: "Inicio", path: "/", icon: "🏠" },
+    // { name: "Inicio", path: "/", icon: "🏠" },
     { name: "Explorar", path: "/explore", icon: "🔍" },
     { name: "Acerca de", path: "/about", icon: "❓" },
+    { name: "Gastronomia", path: "/gastronomy", icon: "🥣" },
+    { name: "Eventos", path: "/event", icon: "🏟️" },
   ];
 
   // Efecto de partículas mágicas
