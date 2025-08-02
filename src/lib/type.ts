@@ -55,3 +55,11 @@ export interface Creator {
   culturalLineage: CulturalLineage[];
   profileImage: string;
 }
+
+export interface CreatorRegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  artisticName: string;
+  culturalDomain: string;
+}

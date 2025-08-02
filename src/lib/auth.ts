@@ -18,3 +18,11 @@ export interface IAuthResponse {
     role: 'USER' | 'CREATOR' | 'ADMIN';
   };
 }
+
+export interface IRegisterCreator {
+  name: string;
+  email: string;
+  password: string;
+  artisticName: string;
+  culturalDomain: string;
+}
