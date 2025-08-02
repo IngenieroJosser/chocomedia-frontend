@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ForgotPassword from '@/components/ui/auth/forgot-password';
 import { IValidateAccount } from '@/lib/auth';
 import { validateAccount } from '@/services/auth-service';
+import Header from '@/components/ui/home/header';
 
 const LoginPage = () => {
   const [formDataLogin, setFormDataLogin] = useState<IValidateAccount>({
@@ -152,6 +153,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012c4d] to-[#001a2d] p-4 relative">
+      <Header />
       {/* Fondo con animación - Solo en cliente */}
       {isClient && (
         <div className="absolute inset-0 overflow-hidden opacity-20">
