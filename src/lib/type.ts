@@ -63,3 +63,39 @@ export interface CreatorRegisterFormData {
   artisticName: string;
   culturalDomain: string;
 }
+
+// Datos de ejemplo para platos tradicionales
+export const traditionalDishes = [
+  { 
+    id: 1, 
+    name: "Mole Poblano", 
+    description: "Pollo bañado en salsa de chocolate, chiles y especias", 
+    ingredients: ["Chocolate", "Chiles", "Ajonjolí", "Pollo"],
+    region: "Puebla",
+    spiceLevel: 3
+  },
+  { 
+    id: 2, 
+    name: "Cochinita Pibil", 
+    description: "Cerdo marinado en achiote y jugo de naranja agria", 
+    ingredients: ["Cerdo", "Achiote", "Naranja agria", "Hojas de plátano"],
+    region: "Yucatán",
+    spiceLevel: 2
+  },
+  { 
+    id: 3, 
+    name: "Chiles en Nogada", 
+    description: "Chiles rellenos cubiertos con salsa de nuez y granada", 
+    ingredients: ["Chile poblano", "Carne picada", "Nuez", "Granada"],
+    region: "Puebla",
+    spiceLevel: 1
+  },
+  { 
+    id: 4, 
+    name: "Pozole", 
+    description: "Sopa de maíz cacahuazintle con carne y guarniciones", 
+    ingredients: ["Maíz cacahuazintle", "Cerdo", "Rábano", "Lechuga"],
+    region: "Jalisco",
+    spiceLevel: 3
+  }
+];
