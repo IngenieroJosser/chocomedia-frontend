@@ -3,6 +3,7 @@
 import { motion, useAnimation } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { FaBook, FaUsers, FaLock, FaLockOpen, FaSeedling } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 const StorySection = () => {
   const [activeChapter, setActiveChapter] = useState(0);
@@ -10,7 +11,8 @@ const StorySection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [riverPositions, setRiverPositions] = useState<Array<{top: string, left: string, width: string}>>([]);
   const [iconPositions, setIconPositions] = useState<Array<{top: string, left: string}>>([]);
-  
+  const router = useRouter();
+
   const chapters = [
     {
       title: "El Origen",
@@ -417,9 +419,10 @@ const StorySection = () => {
           </h3>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <motion.button 
-              className="bg-[#aedd2b] text-[#02416d] font-bold py-3 px-8 rounded-full hover:bg-[#9bc926] transition-colors shadow-lg relative overflow-hidden"
+              className="cursor-pointer bg-[#aedd2b] text-[#02416d] font-bold py-3 px-8 rounded-full hover:bg-[#9bc926] transition-colors shadow-lg relative overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/creator')}
             >
               <span className="relative z-10">Únete como Creador</span>
               <motion.div 
@@ -436,9 +439,10 @@ const StorySection = () => {
               />
             </motion.button>
             <motion.button 
-              className="bg-transparent border-2 border-[#aedd2b] text-[#aedd2b] font-bold py-3 px-8 rounded-full hover:bg-[#aedd2b] hover:text-[#02416d] transition-colors relative overflow-hidden"
+              className="cursor-pointer bg-transparent border-2 border-[#aedd2b] text-[#aedd2b] font-bold py-3 px-8 rounded-full hover:bg-[#aedd2b] hover:text-[#02416d] transition-colors relative overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/explore')}
             >
               <span className="relative z-10">Explora Contenido</span>
               <motion.div 
