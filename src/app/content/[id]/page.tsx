@@ -14,6 +14,7 @@ import Link from 'next/link';
 import Thumbnail from '@/components/Thumbnail';
 import SpinnerCulture from '@/components/SpinnerCulture';
 import { ContentItem, ContentType, CulturalLineage, Creator } from '@/lib/type';
+import Header from '@/components/ui/home/header';
 
 // Función para convertir vistas de cadena a número
 const parseViews = (viewStr: string): number => {
@@ -336,6 +337,7 @@ const CreatorProfile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#012c4d] to-[#001a2d] pb-20">
+      <Header />
       {/* Cabecera con efecto de río cultural */}
       <div className="relative h-96 md:h-80 overflow-hidden">
         {/* Fondo dinámico */}

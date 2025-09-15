@@ -1,21 +1,18 @@
 import { apiRequest } from "@/lib/api";
 import { ICreateAccount, IValidateAccount, IAuthResponse, IRegisterCreator } from "@/lib/auth";
 
-const endpoint = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') || 'http://localhost:3001';
-const endpointAccount = `${endpoint}/auth`
-
 export async function createAccount(dtoCreateAccount: ICreateAccount) {
-  return apiRequest<IAuthResponse>('POST', `${endpointAccount}/sign-up`, dtoCreateAccount);
+  return apiRequest<IAuthResponse>('POST', `/sign-up`, dtoCreateAccount);
 }
 
 export async function validateAccount(dtoValidateAccount: IValidateAccount) {
-  return apiRequest<IAuthResponse>('POST', `${endpointAccount}/sign-in`, dtoValidateAccount);
+  return apiRequest<IAuthResponse>('POST', `/sign-in`, dtoValidateAccount);
 }
 
 export async function fetchingAllUser() {
-  return apiRequest<IAuthResponse>('GET', `${endpointAccount}`);
+  return apiRequest<IAuthResponse>('GET', `/users`);
 }
 
 export async function registerCreator(dtoRegisterCreator: IRegisterCreator) {
-  return apiRequest<IAuthResponse>('POST', `${endpointAccount}/sign-up-creator`, dtoRegisterCreator);
+  return apiRequest<IAuthResponse>('POST', `/sign-up-creator`, dtoRegisterCreator);
 }

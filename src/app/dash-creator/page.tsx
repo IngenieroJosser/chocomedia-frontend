@@ -7,11 +7,11 @@ import {
   FaUpload, FaEdit, FaCog, FaBook, 
   FaHeart, FaComment, FaShare, FaArrowUp,
   FaArrowDown, FaCalendarAlt, FaRegClock,
-  FaTimes, FaEye, FaMapMarkerAlt, FaHandshake
+  FaTimes, FaEye, FaMapMarkerAlt, FaHandshake,
+  FaBlog
 } from 'react-icons/fa';
 import { GiTreeGrowth } from 'react-icons/gi';
 import { BsGraphUpArrow, BsFillLightningChargeFill } from 'react-icons/bs';
-import Link from 'next/link';
 import SpinnerCulture from '@/components/SpinnerCulture';
 import Thumbnail from '@/components/Thumbnail';
 import { ContentItem, ContentType } from '@/lib/type';
@@ -536,6 +536,11 @@ const DashboardCreator = () => {
                       <button className="bg-[#02416d] hover:bg-[#013258] text-white p-4 rounded-xl flex flex-col items-center transition-colors">
                         <FaBook className="text-2xl text-[#aedd2b] mb-2" />
                         <span>Sabiduría</span>
+                      </button>
+                      
+                      <button className="bg-[#02416d] hover:bg-[#013258] text-white p-4 rounded-xl flex flex-col items-center transition-colors">
+                        <FaBlog className="text-2xl text-[#aedd2b] mb-2" />
+                        <span>Aportar al Blog</span>
                       </button>
                       
                       <button className="bg-[#02416d] hover:bg-[#013258] text-white p-4 rounded-xl flex flex-col items-center transition-colors">
